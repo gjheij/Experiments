@@ -26,7 +26,7 @@ stimuli:
   text_color: [-1,1,-1]
 
 design:
-  n_trials: 4 # total nr of blocks for all events
+  n_trials: 14 # total nr of blocks for all events
   randomize: False
   start_duration: 0
   end_duration: 30
