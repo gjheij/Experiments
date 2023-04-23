@@ -21,17 +21,21 @@ eyetracker:
     calibration_type: HV5
 
 stimuli:
+  use_movies: False
   fixation_width: 6
   fixation_color: [1,-1,-1]
   text_color: [-1,1,-1]
+  movie_window_scale_factor: 0.7
+  cue_color: "#FFFFFF" # white
 
 design:
-  n_trials: 14 # total nr of blocks for all events
+  n_repeats: 7 # nr of repeats for each event
   randomize: False
   start_duration: 0
   end_duration: 30
   static_isi: 30
   stim_duration: 30
+  cue_time: 0.5
 
 various:
   piechart_width: 1

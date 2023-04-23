@@ -37,10 +37,11 @@ class MotorTrial(Trial):
         super().run()
 
     def draw(self):
-        # if self.phase == 0:
-        #     self.presentation_time = self.session.timer.getTime()
-        #     if self.presentation_time > -self.session.settings['design'].get('cue_time'):
-        #         self.session.fixation.setColor(self.session.settings['stimuli'].get('cue_color'))
+        if self.phase == 0:
+            if self.session.cue:
+                self.presentation_time = self.session.timer.getTime()
+                if self.presentation_time > -self.session.cue_time:
+                    self.session.fixation.setColor(self.session.cue_color)
                         
         if self.phase == 1:  
 
@@ -49,20 +50,12 @@ class MotorTrial(Trial):
 
             # present instructions
             getattr(self.session, f"stim_{self.condition}").draw()
-
-            # # show correct video
-            # if self.condition == "both":
-            #     self.session.motormovie.movie1.draw()
-            # elif self.condition == "left":
-            #     self.session.motormovie.movie2.draw()
-            # elif self.condition == "right":
-            #     self.session.motormovie.movie3.draw()                
+              
         else:
             self.session.fixation.draw()
 
     def get_events(self):
         events = super().get_events()
-
 
 class InstructionTrial(Trial):
     """ Simple trial with instruction text. """

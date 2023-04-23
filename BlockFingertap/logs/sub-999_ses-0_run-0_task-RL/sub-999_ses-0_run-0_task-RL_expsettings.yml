@@ -1,6 +1,7 @@
 design:
+    cue_time: 0.25
     end_duration: 3
-    n_trials: 4
+    n_repeats: 1
     randomize: false
     start_duration: 0
     static_isi: 3
@@ -47,15 +48,18 @@ preferences:
         audioLib: sounddevice
         units: deg
 stimuli:
+    cue_color: '#FFFFFF'
     fixation_color:
     - 1
     - -1
     - -1
     fixation_width: 6
+    movie_window_scale_factor: 0.7
     text_color:
     - -1
     - 1
     - -1
+    use_movies: true
 various:
     button_size: 2
     buttons:

@@ -35,21 +35,31 @@ class MotorStim(object):
             color=self.color,
             **kwargs)
 
-    def draw(self, **kwargs):
+    def draw(self):
         self.text.draw()
 
 class MotorMovie():
 
-    def __init__(self, session):
+    def __init__(
+            self, 
+        session, 
+        movie_file=None, 
+        size_factor=0.7, 
+        *args, 
+        **kwargs):
 
         self.session = session
         x,y = self.session.win.size
-        new_size = [x*0.7, y*0.7]
+        new_size = [x*size_factor, y*size_factor]
 
         # initialize movies
-        self.movies = []
-        for ix,ii in enumerate(self.session.movie_files):
-            mov = MovieStim3(self.session.win, filename=ii, loop=True, size=new_size)
-            setattr(self, f"movie{ix+1}", mov)
-
-            self.movies.append(mov)
+        self.mov = MovieStim3(
+            self.session.win, 
+            filename=movie_file, 
+            loop=True, 
+            size=new_size,
+            *args,
+            **kwargs)
+        
+    def draw(self):
+        self.mov.draw()
