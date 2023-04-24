@@ -1,23 +1,38 @@
-# Size response experiment
+# Motor experiment
 
-![plot](https://github.com/tknapen/linescanning/blob/master/linescanning/examples/figures/exp_centersurround.png)
+Simple finger-tapping/clenching/moving experiment. To be run as:
 
-In this experiment, we tune the stimulus based on the obtained parameters earlier. It expects a pRF-parameter file in the [prf_params]-folder, with the same subject ID as the one you'll be using to call the experiment. In the settings file, you can specify the sizes of the stimulus in degree-of-visual angle in the variable `stim_sizes` that you would like to present. The other parameter (`stim_repetitions`) that you need to set controls how often each stimulus is presented. Together this controls the number of stimuli presented and thus the length of the experiment. The default settings are based on the simulations in this [notebook](https://github.com/tknapen/linescanning/blob/master/linescanning/notebooks/prf_simulate2.ipynb).
+```python main.py <sub ID> <ses ID> <run ID> <condition>```
 
-This experiment is based on exptools2.
+e.g.,:
 
-To be run as:
+```python main.py 01 1 1 RL`
 
-```python main.py <sub ID> <run number> <hemisphere> <eyelink>```
+Use numbers only for `sub ID`, `ses ID`, and `run ID`; we'll make the folder `sub-<sub_ID>_ses-<ses-ID>_run-<run_ID>_task-<condition>`
 
-Run:
+We can deal with the following conditions:
 
-```python main.py ```
+- Left vs right         (condition = `RL`)
+- Left vs both          (condition = `BL`)
+- Right vs both         (condition = `BR`)
+- Right vs left vs both (condition = `RBL`)
+- demo                  (condition = `demo`) > show brief version of experiment to show your subject what it looks like
 
-to get a help-window. Settings for the experiment are in [settings.yml](settings.yml)
+The experiment can be run as a block paradigm or event-related paradigm. By default, it's set to do 7 blocks of each event specified (e.g., `left-right`) of 30 seconds, with 30 seconds rest in between, and 30 at the end of the experiment (=870s). The following parameters in the [settings-file](settings.yml) can be used to tailor your block experiment:
 
-Button instructions:
+- `start_duration`      (baseline at the end of the beginning. By default 0 as the block-design starts with baseline)
+- `end_duration`        (baseline at the end of the experiment, as it ends with a stimulus-block)
+- `static_isi`          (length of rest periods in between activation blocks)
+- `stim_duration`       (length of activation period)
 
-- Press 'b' when the contrast was HIGH then LOW
+If you keep these parameters the same, you have a block design. Change the following items to make it event-related:
 
-- Press 'e' when the contrast was LOW then HIGH
+- `static_isi` must be set to `"None"` > this will use the `iti` variables to be used to create a set of inter-stimulus intervals based on a negative exponential
+- `stim_duration`: can be max 3 seconds to be effective
+- `randomize`: advised to be set to `True` so that the events are randomized
+
+Other parameters than can be set:
+
+- `use_movies`: by default, the stimulus entails displaying text like `MOVE RIGHT HAND`. Alternatively, you can use animations of the movement that needs to be made. To do this, set `use_movies` to `True`
+- `randomize`: randomize the blocks/events, rather than sticking to a fixed order (advised for event-related design)
+- `cue_time`: we can present a cue by changing the color of the fixation cross shortly before the onset of an event to let the participant know a stimulus is coming. This can reduce the element of surprise and improve reaction times. To turn off this cue, set `cue_time` to `"None"`
