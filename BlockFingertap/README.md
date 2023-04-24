@@ -6,7 +6,7 @@ Simple finger-tapping/clenching/moving experiment. To be run as:
 
 e.g.,:
 
-```python main.py 01 1 1 RL`
+```python main.py 01 1 1 RL```
 
 Use numbers only for `sub ID`, `ses ID`, and `run ID`; we'll make the folder `sub-<sub_ID>_ses-<ses-ID>_run-<run_ID>_task-<condition>`
 
