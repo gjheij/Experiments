@@ -22,7 +22,7 @@ eyetracker:
 
 stimuli:
   use_movies: False
-  fixation_width: 6
+  fixation_width: 4
   fixation_color: [1,-1,-1]
   text_color: [-1,1,-1]
   movie_window_scale_factor: 0.7
@@ -36,6 +36,10 @@ design:
   static_isi: 30
   stim_duration: 30
   cue_time: 0.5
+  mean_iti_duration: 6.0
+  minimal_iti_duration: 3.0
+  maximal_iti_duration: 18.0
+  total_iti_duration_leeway: 2.0  
 
 various:
   piechart_width: 1
