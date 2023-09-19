@@ -37,13 +37,8 @@ class MotorTrial(Trial):
         super().run()
 
     def draw(self):
-        if self.phase == 0:
-            if self.session.cue:
-                self.presentation_time = self.session.timer.getTime()
-                if self.presentation_time > -self.session.cue_time:
-                    self.session.fixation.setColor(self.session.cue_color)
-                        
-        if self.phase == 1:  
+        
+        if self.phase == 0:  
 
             # reset fixation cross color
             self.session.fixation.setColor(self.session.fixation_color)            
@@ -60,10 +55,22 @@ class MotorTrial(Trial):
 class InstructionTrial(Trial):
     """ Simple trial with instruction text. """
 
-    def __init__(self, session, trial_nr, phase_durations=[np.inf],
-                 txt=None, keys=None, **kwargs):
+    def __init__(
+        self, 
+        session, 
+        trial_nr, 
+        phase_durations=[np.inf],
+        txt=None, 
+        keys=None, 
+        *args,
+        **kwargs):
 
-        super().__init__(session, trial_nr, phase_durations, **kwargs)
+        super().__init__(
+            session, 
+            trial_nr, 
+            phase_durations, 
+            *args,
+            **kwargs)
 
         txt_height = self.session.settings['various'].get('text_height')
         txt_width = self.session.settings['various'].get('text_width')
@@ -71,7 +78,12 @@ class InstructionTrial(Trial):
         if txt is None:
             txt = '''Press any button to continue.'''
 
-        self.text = TextStim(self.session.win, txt, height=txt_height, wrapWidth=txt_width, **kwargs)
+        self.text = TextStim(
+            self.session.win, 
+            txt, 
+            height=txt_height, 
+            wrapWidth=txt_width
+        )
         self.keys = keys
 
     def draw(self):
@@ -92,10 +104,24 @@ class InstructionTrial(Trial):
 class DummyWaiterTrial(InstructionTrial):
     """ Simple trial with text (trial x) and fixation. """
 
-    def __init__(self, session, trial_nr, phase_durations=None,
-                 txt="Waiting for scanner trigger", **kwargs):
+    def __init__(
+        self, 
+        session, 
+        trial_nr, 
+        phase_durations=None,
+        txt="Waiting for scanner triggers.", 
+        *args,
+        **kwargs):
 
-        super().__init__(session, trial_nr, phase_durations, txt, **kwargs)
+        self.txt = txt
+        super().__init__(
+            session, 
+            trial_nr, 
+            phase_durations, 
+            self.txt, 
+            *args,
+            **kwargs
+        )
 
     def draw(self):
         if self.phase == 0:

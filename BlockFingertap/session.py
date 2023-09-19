@@ -10,7 +10,13 @@ opj = os.path.join
 opd = os.path.dirname
 
 class MotorSession(Session):
-    def __init__(self, output_str, output_dir, settings_file, condition=None):
+    def __init__(
+        self, 
+        output_str, 
+        output_dir, 
+        settings_file, 
+        condition=None
+        ):
         """ Initializes StroopSession object.
 
         Parameters
@@ -27,7 +33,11 @@ class MotorSession(Session):
         condition: str, optional
             Which conditions to include in the experiment; options are 'LR' (for left & right hand movement), "LB" (left hand & both hands), and "RB" (right hand & both hands)
         """
-        super().__init__(output_str, output_dir=output_dir, settings_file=settings_file)  # initialize parent class!
+        super().__init__(
+            output_str, 
+            output_dir=output_dir, 
+            settings_file=settings_file
+        )  # initialize parent class!
 
         self.duration           = self.settings['design'].get('stim_duration')
         self.n_repeats          = self.settings['design'].get('n_repeats')
@@ -42,25 +52,26 @@ class MotorSession(Session):
         self.stim_duration      = self.settings['design'].get('stim_duration')
         self.static_isi         = self.settings['design'].get('static_isi')
         self.intended_duration  = self.settings['design'].get('intended_duration')
-
+        self.condition          = condition
+        
         # add demo mode with 1 iteration of right/left stim
-        if condition == "demo":
+        if self.condition == "demo":
             self.events = ["right","left"]
+            self.start_duration = 2
             self.outro_trial_time = 2
             self.stim_duration = 2
             self.static_isi = 2
             self.n_repeats = 1
-            self.start_duration = 0
-        elif condition == "RL":
+        elif self.condition == "RL":
             self.events = ["right","left"]
-        elif condition == "LB":
+        elif self.condition == "LB":
             self.events = ["left","both"]
-        elif condition == "RB":
+        elif self.condition == "RB":
             self.events = ["right","both"]
-        elif condition == "RBL":
+        elif self.condition == "RBL":
             self.events = ["right","left","both"]
         else:
-            raise ValueError(f"Condition must be one of 'RL/LR', 'LB/BL', or 'RB/BR', or 'all [R/L/both]' not '{condition}'")
+            raise ValueError(f"Condition must be one of 'RL/LR', 'LB/BL', or 'RB/BR', or 'all [R/L/both]' not '{self.condition}'")
 
         self.n_events = len(self.events)
         self.n_trials = self.n_repeats*self.n_events
@@ -74,7 +85,8 @@ class MotorSession(Session):
         self.fixation = FixationCross(
             win=self.win, 
             lineWidth=self.fixation_width, 
-            color=self.fixation_color)
+            color=self.fixation_color
+        )
 
         for stim in self.events:
             # define stim:
@@ -124,24 +136,31 @@ class MotorSession(Session):
         self.total_experiment_time = self.start_duration + (self.n_trials * self.stim_duration) + itis.sum() + self.outro_trial_time
 
         self.add_to_total = 0
-        if self.total_experiment_time < self.intended_duration:
-            self.add_to_total = self.intended_duration-self.total_experiment_time
-        elif self.intended_duration<self.total_experiment_time:
-            raise ValueError(f"WARNING: intended duration ({self.intended_duration}) is smaller than total experiment time ({self.total_experiment_time})")
+        if self.condition != "demo":
+            if isinstance(self.intended_duration, (int,float)):
+                if self.total_experiment_time < self.intended_duration:
+                    self.add_to_total = self.intended_duration-self.total_experiment_time
+                elif self.intended_duration<self.total_experiment_time:
+                    raise ValueError(f"WARNING: intended duration ({self.intended_duration}) is smaller than total experiment time ({self.total_experiment_time})")
             
         self.total_experiment_time += self.add_to_total
         self.outro_trial_time += self.add_to_total
         print(f"Total experiment time = {round(self.total_experiment_time,2)}s (added {self.add_to_total}s, with {self.n_repeats}x {self.events} each")
-
+        
+        # baseline trial beginning exp
         dummy_trial = DummyWaiterTrial(
             session=self,
             trial_nr=0,
-            phase_durations=[np.inf, self.start_duration])
+            phase_durations=[np.inf, self.start_duration],
+            phase_names=["dummy","intro"]
+        )
 
+        # baseline trial end of exp
         outro_trial = OutroTrial(
             session=self,
-            trial_nr=self.n_trials+2,
+            trial_nr=self.n_trials+1,
             phase_durations=[self.outro_trial_time],
+            phase_names=["outro"],
             txt='')
         
         # parameters
@@ -159,8 +178,8 @@ class MotorSession(Session):
                 MotorTrial(
                     session=self,
                     trial_nr=1+i,
-                    phase_durations=[itis[i], self.stim_duration],
-                    phase_names=['iti','stim'],
+                    phase_durations=[self.stim_duration,itis[i]],
+                    phase_names=['stim','iti'],
                     parameters={'condition': self.events[self.movement[i]]},
                     timing='seconds',
                     verbose=True))

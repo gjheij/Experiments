@@ -10,12 +10,14 @@ e.g.,:
 
 Use numbers only for `sub ID`, `ses ID`, and `run ID`; we'll make the folder `sub-<sub_ID>_ses-<ses-ID>_run-<run_ID>_task-<condition>`
 
-We can deal with the following conditions:
+If you run `python main.py` by itself, you'll be able to fill in information by hand.
 
+We can deal with the following conditions:
+- Left or right         (condition = `R`/`L`)
 - Left vs right         (condition = `RL`)
 - Left vs both          (condition = `BL`)
 - Right vs both         (condition = `BR`)
-- Right vs left vs both (condition = `RBL`)
+- Right vs left vs both (condition = `RBL`/`all`)
 - demo                  (condition = `demo`) > show brief version of experiment to show your subject what it looks like
 
 The experiment can be run as a block paradigm or event-related paradigm. By default, it's set to do 7 blocks of each event specified (e.g., `left-right`) of 30 seconds, with 30 seconds rest in between, and 30 at the end of the experiment (=870s). The following parameters in the [settings-file](settings.yml) can be used to tailor your block experiment:
@@ -33,6 +35,7 @@ If you keep these parameters the same, you have a block design. Change the follo
 
 Other parameters than can be set:
 
+- `n_repeats`: number of times to repeat the set of selected stimuli. E.g., if condition == `RL` we'll use 2 stimuli (`left` and `right`). The total number of trials is then 2*`n_repeats`. Similarly, if condition == `RBL`, we'll use 3 stimuli. The total number of trials is then 3*`n_repeats`.
 - `use_movies`: by default, the stimulus entails displaying text like `MOVE RIGHT HAND`. Alternatively, you can use animations of the movement that needs to be made. To do this, set `use_movies` to `True`
 - `randomize`: randomize the blocks/events, rather than sticking to a fixed order (advised for event-related design)
-- `cue_time`: we can present a cue by changing the color of the fixation cross shortly before the onset of an event to let the participant know a stimulus is coming. This can reduce the element of surprise and improve reaction times. To turn off this cue, set `cue_time` to `"None"`
+- `intended_duration`: this can be the full duration (in seconds) of your acquisition. Settings this value will ensure the experiment runs until the end of the sequence. This is mainly important for visual experiments, but it also enhances subject experience (bit sloppy if the experiment is done while you're still scanning..)

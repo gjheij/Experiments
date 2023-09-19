@@ -41,6 +41,8 @@ elif condition == "BL":
     condition = "LB"
 elif condition == "all":
     condition = "RBL"
+elif condition == "demo":
+    condition = "demo"    
 
 output_str = f'sub-{subject}_ses-{session}_run-{run}_task-{condition}'
 settings_fn = opj(opd(__file__), 'settings.yml')
