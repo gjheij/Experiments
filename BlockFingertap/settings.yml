@@ -29,15 +29,16 @@ stimuli:
   cue_color: "#FFFFFF" # white
 
 design:
-  n_repeats: 7 # nr of repeats for each event
+  n_repeats: 9 # nr of repeats for each event
   randomize: False
-  start_duration: 0
+  start_duration: 30
   end_duration: 30
-  static_isi: 30
-  stim_duration: 30
+  intended_duration: 336
+  static_isi: None #30
+  stim_duration: 3
   cue_time: 0.5
-  mean_iti_duration: 6.0
-  minimal_iti_duration: 3.0
+  mean_iti_duration: 7
+  minimal_iti_duration: 5
   maximal_iti_duration: 18.0
   total_iti_duration_leeway: 2.0  
 

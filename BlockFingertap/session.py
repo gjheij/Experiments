@@ -41,6 +41,7 @@ class MotorSession(Session):
         self.start_duration     = self.settings['design'].get('start_duration')
         self.stim_duration      = self.settings['design'].get('stim_duration')
         self.static_isi         = self.settings['design'].get('static_isi')
+        self.intended_duration  = self.settings['design'].get('intended_duration')
 
         # add demo mode with 1 iteration of right/left stim
         if condition == "demo":
@@ -121,7 +122,16 @@ class MotorSession(Session):
 
         # calculate full time of experiment
         self.total_experiment_time = self.start_duration + (self.n_trials * self.stim_duration) + itis.sum() + self.outro_trial_time
-        print(f"Total experiment time = {self.total_experiment_time}s, with {self.n_repeats}x {self.events} each")
+
+        self.add_to_total = 0
+        if self.total_experiment_time < self.intended_duration:
+            self.add_to_total = self.intended_duration-self.total_experiment_time
+        elif self.intended_duration<self.total_experiment_time:
+            raise ValueError(f"WARNING: intended duration ({self.intended_duration}) is smaller than total experiment time ({self.total_experiment_time})")
+            
+        self.total_experiment_time += self.add_to_total
+        self.outro_trial_time += self.add_to_total
+        print(f"Total experiment time = {round(self.total_experiment_time,2)}s (added {self.add_to_total}s, with {self.n_repeats}x {self.events} each")
 
         dummy_trial = DummyWaiterTrial(
             session=self,
