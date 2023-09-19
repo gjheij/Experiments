@@ -13,7 +13,7 @@ Use numbers only for `sub ID`, `ses ID`, and `run ID`; we'll make the folder `su
 If you run `python main.py` by itself, you'll be able to fill in information by hand.
 
 We can deal with the following conditions:
-- Left or right         (condition = `R`/`L`)
+- Left or right or both  (condition = `R`/`L`/`both`)
 - Left vs right         (condition = `RL`)
 - Left vs both          (condition = `BL`)
 - Right vs both         (condition = `BR`)

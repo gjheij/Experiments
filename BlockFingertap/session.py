@@ -64,6 +64,12 @@ class MotorSession(Session):
             self.n_repeats = 1
         elif self.condition == "RL":
             self.events = ["right","left"]
+        elif self.condition == "R":
+            self.events = ["right"]
+        elif self.condition == "L":
+            self.events = ["left"]
+        elif self.condition == "both":
+            self.events = ["both"]        
         elif self.condition == "LB":
             self.events = ["left","both"]
         elif self.condition == "RB":
@@ -73,6 +79,7 @@ class MotorSession(Session):
         else:
             raise ValueError(f"Condition must be one of 'RL/LR', 'LB/BL', or 'RB/BR', or 'all [R/L/both]' not '{self.condition}'")
 
+        # get total number of trials
         self.n_events = len(self.events)
         self.n_trials = self.n_repeats*self.n_events
 
@@ -88,8 +95,8 @@ class MotorSession(Session):
             color=self.fixation_color
         )
 
+        # define stim:
         for stim in self.events:
-            # define stim:
             if stim == "both":
                 self.display_instructions = f"MOVE BOTH HANDS"
             else:
@@ -107,6 +114,7 @@ class MotorSession(Session):
                     color=self.text_color,
                     text=self.display_instructions)
             
+            # set attributes and load into memory
             setattr(self, f"stim_{stim}", stim_obj)
             stim_obj.draw()
             
@@ -121,6 +129,7 @@ class MotorSession(Session):
     def create_trials(self):
         """ Creates trials (ideally before running your session!) """
 
+        # draw ISIs from negative exponential or take fixed isi
         if not isinstance(self.static_isi, (int,float)):
             itis = iterative_itis(
                 mean_duration=self.settings['design'].get('mean_iti_duration'),
@@ -135,6 +144,7 @@ class MotorSession(Session):
         # calculate full time of experiment
         self.total_experiment_time = self.start_duration + (self.n_trials * self.stim_duration) + itis.sum() + self.outro_trial_time
 
+        # check if we should add time to meet intended_duration
         self.add_to_total = 0
         if self.condition != "demo":
             if isinstance(self.intended_duration, (int,float)):
