@@ -1,0 +1,61 @@
+monitor:
+  name: 7T
+  width: 69  # width of monitor (in cm)
+  distance: 196  # distance of participant from monitor (in cm)
+  gamma: 2.1  # specific value for gamma correction
+  verbose: True
+
+window:
+  size: [1920, 1080]
+  screen: 0
+  pos: [0, 0]
+  color: [0, 0, 0]
+  fullscr: True
+  winType: pyglet
+  waitBlanking: True
+
+eyetracker:
+  address: '100.1.1.1'
+  dot_size: 0.1  # in deg
+  options:
+    calibration_type: HV5
+
+stimuli:
+  use_movies: False
+  fixation_width: 4
+  fixation_color: [1,-1,-1]
+  text_color: [-1,1,-1]
+  movie_window_scale_factor: 0.7
+  cue_size: 1
+  cue_color: [-1,1,-1]
+  star_anchors: [
+    [0,3],
+    [2,-2],
+    [-3,2],
+    [3,2],
+    [-2,-2]
+  ]
+
+design:
+  star_points: 5
+  n_repeats: 2
+  steps_pursuit: 100
+  steps_saccade: 3
+  randomize: False # randomize events
+  start_duration: 30 # baseline beginning of trial
+  end_duration: 30 # baseline end of trial (not too important if you have set `intended_duration`)
+  intended_duration: 336 # add seconds of full scan duration > fills up the experiment with baseline
+  static_isi: None # add integer for fixed intertrial interval
+  stim_duration: 3 # stimulus duration
+  cue_time: 0.5
+  mean_iti_duration: 8 # mean intertrial interval | not used if `static_isi` is set
+  minimal_iti_duration: 6 # minimum intertrial interval | not used if `static_isi` is set
+  maximal_iti_duration: 18.0 # maximum intertrial interval | not used if `static_isi` is set
+  total_iti_duration_leeway: 2.0  
+
+various:
+  piechart_width: 1
+  text_width: 150
+  text_height: 0.5
+  buttons: ['b', 'e', 'j', 'k', 'l', 'semicolon']
+  button_size: 2
