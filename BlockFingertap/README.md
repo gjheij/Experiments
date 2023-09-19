@@ -20,7 +20,7 @@ We can deal with the following conditions:
 - Right vs left vs both (condition = `RBL`/`all`)
 - demo                  (condition = `demo`) > show brief version of experiment to show your subject what it looks like
 
-The experiment can be run as a block paradigm or event-related paradigm. By default, it's set to do 7 blocks of each event specified (e.g., `left-right`) of 30 seconds, with 30 seconds rest in between, and 30 at the end of the experiment (=870s). The following parameters in the [settings-file](settings.yml) can be used to tailor your block experiment:
+The experiment can be run as a block paradigm or event-related paradigm. The following parameters in the [settings-file](settings.yml) can be used to tailor your block experiment:
 
 - `start_duration`      (baseline at the end of the beginning. By default 0 as the block-design starts with baseline)
 - `end_duration`        (baseline at the end of the experiment, as it ends with a stimulus-block)

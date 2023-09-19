@@ -32,6 +32,9 @@ if condition is None:
     condition = input('Condition? (RL): ')
     condition = "RL" if condition == '' else condition    
 
+cmd = f"""python main.py {subject} {session} {run} {condition}"""
+print(f"\n{cmd}\n")
+
 # conform to specific order
 if condition == "LR":
     condition = "RL"
