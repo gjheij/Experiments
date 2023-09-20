@@ -1,0 +1,6 @@
+name: eyelink
+channels:
+  - conda-forge
+  - intel
+  - defaults
+prefix: /data1/projects/dumoulinlab/Projects/packages/envs/eyelink
