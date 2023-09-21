@@ -29,7 +29,7 @@ stimuli:
   cue_color: "#FFFFFF" # white
 
 design:
-  n_repeats: 8 # nr of repeats for each event. If condition = RBL, a total of 3*n_repeat trials are used. Similarly, if condition = RL, a total of 2*n_repeats is used
+  n_repeats: 7 # nr of repeats for each event. If condition = RBL, a total of 3*n_repeat trials are used. Similarly, if condition = RL, a total of 2*n_repeats is used
   randomize: False # randomize events
   start_duration: 30 # baseline beginning of trial
   end_duration: 30 # baseline end of trial (not too important if you have set `intended_duration`)
@@ -37,11 +37,12 @@ design:
   static_isi: None # add integer for fixed intertrial interval
   stim_duration: 3 # stimulus duration
   cue_time: 0.5
-  mean_iti_duration: 8 # mean intertrial interval | not used if `static_isi` is set
+  mean_iti_duration: 10 # mean intertrial interval | not used if `static_isi` is set
   minimal_iti_duration: 6 # minimum intertrial interval | not used if `static_isi` is set
   maximal_iti_duration: 18.0 # maximum intertrial interval | not used if `static_isi` is set
   total_iti_duration_leeway: 2.0  
-
+  iti_file: None # "itis_desc-21_events.txt"
+  
 various:
   piechart_width: 1
   text_width: 150

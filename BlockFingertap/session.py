@@ -52,13 +52,14 @@ class MotorSession(Session):
         self.stim_duration      = self.settings['design'].get('stim_duration')
         self.static_isi         = self.settings['design'].get('static_isi')
         self.intended_duration  = self.settings['design'].get('intended_duration')
+        self.iti_file           = self.settings['design'].get('iti_file')
         self.condition          = condition
         
         # add demo mode with 1 iteration of right/left stim
         if self.condition == "demo":
             self.events = ["right","left"]
             self.start_duration = 2
-            self.outro_trial_time = 2
+            self.outro_trial_time = 0
             self.stim_duration = 2
             self.static_isi = 2
             self.n_repeats = 1
@@ -130,17 +131,28 @@ class MotorSession(Session):
         """ Creates trials (ideally before running your session!) """
 
         # draw ISIs from negative exponential or take fixed isi
-        if not isinstance(self.static_isi, (int,float)):
-            itis = iterative_itis(
-                mean_duration=self.settings['design'].get('mean_iti_duration'),
-                minimal_duration=self.settings['design'].get('minimal_iti_duration'),
-                maximal_duration=self.settings['design'].get('maximal_iti_duration'),
-                n_trials=self.n_trials,
-                leeway=self.settings['design'].get('total_iti_duration_leeway'),
-                verbose=True)
+        if not isinstance(self.iti_file, str):
+            if not isinstance(self.static_isi, (int,float)):
+                itis = iterative_itis(
+                    mean_duration=self.settings['design'].get('mean_iti_duration'),
+                    minimal_duration=self.settings['design'].get('minimal_iti_duration'),
+                    maximal_duration=self.settings['design'].get('maximal_iti_duration'),
+                    n_trials=self.n_trials,
+                    leeway=self.settings['design'].get('total_iti_duration_leeway'),
+                    verbose=True)
+            else:
+                itis = np.full(self.n_trials, self.static_isi)
         else:
-            itis = np.full(self.n_trials, self.static_isi)
-
+            if self.condition == "demo":
+                itis = np.full(self.n_trials, self.static_isi)
+            else:
+                print(f"Reading ITI-file: {self.iti_file}")
+                itis = np.loadtxt(self.iti_file)
+        
+        # double check
+        if len(itis) != self.n_trials:
+            raise ValueError(f"Mismatch between number of ITIs ({len(itis)}) and number of trials ({self.n_trials})")
+        
         # calculate full time of experiment
         self.total_experiment_time = self.start_duration + (self.n_trials * self.stim_duration) + itis.sum() + self.outro_trial_time
 
