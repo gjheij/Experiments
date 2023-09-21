@@ -1,8 +1,5 @@
 from exptools2.core import Session
 import numpy as np
-import pandas as pd
-from psychopy import tools, logging
-import scipy.stats as ss
 from stimuli import FixationCross, MotorStim, MotorMovie
 from trial import MotorTrial, DummyWaiterTrial, OutroTrial
 import os
