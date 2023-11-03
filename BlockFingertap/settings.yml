@@ -2,7 +2,7 @@ monitor:
   name: 7T
   width: 69  # width of monitor (in cm)
   distance: 196  # distance of participant from monitor (in cm)
-  gamma: 2.1  # specific value for gamma correction
+  gamma: 2.1  # TURN OFF FOR WINDOWS
   verbose: True
 
 window:
