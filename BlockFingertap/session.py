@@ -55,7 +55,7 @@ class MotorSession(Session):
         
         # add demo mode with 1 iteration of right/left stim
         if self.condition == "demo":
-            self.events = ["right","left"]
+            self.events = ["right","left","both"]
             self.start_duration = 2
             self.outro_trial_time = 0
             self.stim_duration = 2
@@ -199,7 +199,7 @@ class MotorSession(Session):
                     raise FileNotFoundError(f"Could not find requested file: '{self.order_file}'")
         else:
             self.movement = np.tile(np.arange(0,self.n_events), self.n_repeats)
-            
+
         if len(self.movement) != len(itis):
             raise ValueError(f"Mismatch between number of ITIs ({len(itis)}) and number of trials ({self.movement})")
         
