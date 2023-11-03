@@ -12,9 +12,10 @@ parser.add_argument('subject', default=None, nargs='?')
 parser.add_argument('session', default=None, nargs='?')
 parser.add_argument('run', default=None, nargs='?')
 parser.add_argument('condition', default=None, nargs='?')
+parser.add_argument('acquisition', default=None, nargs='?')
 
 cmd_args = parser.parse_args()
-subject, session, run, condition = cmd_args.subject, cmd_args.session, cmd_args.run, cmd_args.condition
+subject, session, run, condition, acquisition = cmd_args.subject, cmd_args.session, cmd_args.run, cmd_args.condition, cmd_args.acquisition
 
 if subject is None:
     subject = input('Subject? (999): ')
@@ -32,7 +33,11 @@ if condition is None:
     condition = input('Condition? (RL): ')
     condition = "RL" if condition == '' else condition    
 
-cmd = f"""python main.py {subject} {session} {run} {condition}"""
+if acquisition is None:
+    acquisition = input('Acquisition? (None): ')
+    acquisition = None if acquisition == '' else acquisition    
+
+cmd = f"""python main.py {subject} {session} {run} {condition} {acquisition}"""
 print(f"\n{cmd}\n")
 
 # conform to specific order
@@ -47,7 +52,11 @@ elif condition == "all":
 elif condition == "demo":
     condition = "demo"    
 
-output_str = f'sub-{subject}_ses-{session}_run-{run}_task-{condition}'
+add_acq = ""
+if isinstance(acquisition, str):
+    add_acq = f"_acq-{acquisition}"
+
+output_str = f'sub-{subject}_ses-{session}_run-{run}_task-{condition}{add_acq}'
 settings_fn = opj(opd(__file__), 'settings.yml')
 
 output_dir = './logs/'+output_str

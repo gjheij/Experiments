@@ -50,6 +50,7 @@ class MotorSession(Session):
         self.static_isi         = self.settings['design'].get('static_isi')
         self.intended_duration  = self.settings['design'].get('intended_duration')
         self.iti_file           = self.settings['design'].get('iti_file')
+        self.order_file         = self.settings['design'].get('order_file')
         self.condition          = condition
         
         # add demo mode with 1 iteration of right/left stim
@@ -144,7 +145,7 @@ class MotorSession(Session):
                 itis = np.full(self.n_trials, self.static_isi)
             else:
                 print(f"Reading ITI-file: {self.iti_file}")
-                itis = np.loadtxt(self.iti_file)
+                itis = np.loadtxt(self.iti_file, dtype=float)
         
         # double check
         if len(itis) != self.n_trials:
@@ -182,13 +183,25 @@ class MotorSession(Session):
             phase_names=["outro"],
             txt='')
         
-        # parameters
-        self.movement = np.tile(np.arange(0,self.n_events), self.n_repeats)
-        
-        # shuffle blocks if you want
-        if self.settings['design'].get('randomize'):
-            np.random.shuffle(self.movement)
+        # order file
+        if not isinstance(self.order_file, str):
+            
+            self.movement = np.tile(np.arange(0,self.n_events), self.n_repeats)
+            
+            # shuffle blocks if you want
+            if self.settings['design'].get('randomize'):
+                np.random.shuffle(self.movement)
+        else:
+            # assume order is randomized already
+            if os.path.exists(self.order_file):
+                print(f"Reading order-file: {self.order_file}")
+                self.movement = np.loadtxt(self.order_file, dtype=int)
+            else:
+                raise FileNotFoundError(f"Could not find requested file: '{self.order_file}'")
 
+        if len(self.movement) != len(itis):
+            raise ValueError(f"Mismatch between number of ITIs ({len(itis)}) and number of trials ({self.movement})")
+        
         self.trials = [dummy_trial]
         for i in range(self.n_trials):
             
@@ -201,7 +214,9 @@ class MotorSession(Session):
                     phase_names=['stim','iti'],
                     parameters={'condition': self.events[self.movement[i]]},
                     timing='seconds',
-                    verbose=True))
+                    verbose=True
+                )
+            )
             
         self.trials.append(outro_trial)
 
