@@ -129,23 +129,23 @@ class MotorSession(Session):
         """ Creates trials (ideally before running your session!) """
 
         # draw ISIs from negative exponential or take fixed isi
-        if not isinstance(self.iti_file, str):
-            if not isinstance(self.static_isi, (int,float)):
-                itis = iterative_itis(
-                    mean_duration=self.settings['design'].get('mean_iti_duration'),
-                    minimal_duration=self.settings['design'].get('minimal_iti_duration'),
-                    maximal_duration=self.settings['design'].get('maximal_iti_duration'),
-                    n_trials=self.n_trials,
-                    leeway=self.settings['design'].get('total_iti_duration_leeway'),
-                    verbose=True)
-            else:
-                itis = np.full(self.n_trials, self.static_isi)
-        else:
-            if self.condition == "demo":
-                itis = np.full(self.n_trials, self.static_isi)
+        if self.condition != "demo":
+            if not isinstance(self.iti_file, str):
+                if not isinstance(self.static_isi, (int,float)):
+                    itis = iterative_itis(
+                        mean_duration=self.settings['design'].get('mean_iti_duration'),
+                        minimal_duration=self.settings['design'].get('minimal_iti_duration'),
+                        maximal_duration=self.settings['design'].get('maximal_iti_duration'),
+                        n_trials=self.n_trials,
+                        leeway=self.settings['design'].get('total_iti_duration_leeway'),
+                        verbose=True)
+                else:
+                    itis = np.full(self.n_trials, self.static_isi)
             else:
                 print(f"Reading ITI-file: {self.iti_file}")
                 itis = np.loadtxt(self.iti_file, dtype=float)
+        else:
+            itis = np.full(self.n_trials, self.static_isi)
         
         # double check
         if len(itis) != self.n_trials:
@@ -184,21 +184,22 @@ class MotorSession(Session):
             txt='')
         
         # order file
-        if not isinstance(self.order_file, str):
-            
+        if self.condition != "demo":
+            if not isinstance(self.order_file, str):
+                self.movement = np.tile(np.arange(0,self.n_events), self.n_repeats)
+                # shuffle blocks if you want
+                if self.settings['design'].get('randomize'):
+                    np.random.shuffle(self.movement)
+            else:
+                # assume order is randomized already
+                if os.path.exists(self.order_file):
+                    print(f"Reading order-file: {self.order_file}")
+                    self.movement = np.loadtxt(self.order_file, dtype=int)
+                else:
+                    raise FileNotFoundError(f"Could not find requested file: '{self.order_file}'")
+        else:
             self.movement = np.tile(np.arange(0,self.n_events), self.n_repeats)
             
-            # shuffle blocks if you want
-            if self.settings['design'].get('randomize'):
-                np.random.shuffle(self.movement)
-        else:
-            # assume order is randomized already
-            if os.path.exists(self.order_file):
-                print(f"Reading order-file: {self.order_file}")
-                self.movement = np.loadtxt(self.order_file, dtype=int)
-            else:
-                raise FileNotFoundError(f"Could not find requested file: '{self.order_file}'")
-
         if len(self.movement) != len(itis):
             raise ValueError(f"Mismatch between number of ITIs ({len(itis)}) and number of trials ({self.movement})")
         
